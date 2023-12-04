@@ -1,9 +1,4 @@
-import os
 import csv
-import random
-
-import cv2
-import pandas as pd
 
 data = []
 counters = dict()
