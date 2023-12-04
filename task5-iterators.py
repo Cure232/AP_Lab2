@@ -46,7 +46,7 @@ class ZebraIterator:
             raise StopIteration
 
 
-with open('annotation.csv', 'r', newline='') as csvfile:
+with open('new_annotation_task2.csv', 'r', newline='') as csvfile:
     filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
     filereader.__next__()
     for row in filereader:
