@@ -1,9 +1,6 @@
 import csv
 
 
-data = []
-
-
 class HorseIterator:
     data_position = 0
 
@@ -17,10 +14,10 @@ class HorseIterator:
     def __next__(self):
         if self.counter < self.limit:
             for i in range(self.data_position, len(data)):
-                if data[i][3] == "Bay horse":
+                if data[i][2] == "bay horse":
                     self.counter += 1
                     self.data_position = i + 1
-                    return data[i][1]
+                    return data[i][0]
         else:
             raise StopIteration
 
@@ -38,25 +35,31 @@ class ZebraIterator:
     def __next__(self):
         if self.counter < self.limit:
             for i in range(self.data_position, len(data)):
-                if data[i][3] == "Zebra":
+                if data[i][2] == "zebra":
                     self.counter += 1
                     self.data_position = i + 1
-                    return data[i][1]
+                    return data[i][0]
         else:
             raise StopIteration
 
 
-with open('new_annotation_task2.csv', 'r', newline='') as csvfile:
-    filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
-    filereader.__next__()
-    for row in filereader:
-        data.append(row)
+def scan_annotation(annotation_path: str) -> list[list[str]]:
+    with open(annotation_path, 'r', newline='') as csvfile:
+        filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
+        result = []
+        for row in filereader:
+            row.pop(0)
+            result.append(row)
+        return result 
 
-s_iter1 = HorseIterator(3)
-s_iter2 = ZebraIterator(5)
 
-for val in s_iter1:
-    print(val)
+if __name__ == '__main__':
+    data = scan_annotation('annotation.csv')
+    s_iter1 = HorseIterator(3)
+    s_iter2 = ZebraIterator(5)
+    s_iter2.__next__
+    for val in s_iter1:
+        print(val)
 
-for val in s_iter2:
-    print(val)
+    for val in s_iter2:
+        print(val)

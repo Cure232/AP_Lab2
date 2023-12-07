@@ -1,19 +1,30 @@
 import os
+
 import pandas as pd
 
-columns = ["Absolute path", "Relative path", "Class"]
-data = []
-rel_path1 = r'dataset\bay horse'
-rel_path2 = r'dataset\zebra'
 
-name_list1 = os.listdir(rel_path1)
-name_list2 = os.listdir(rel_path2)
-
-for name in name_list1:
-    data.append([os.path.abspath(rel_path1 + '\\' + name), f'{rel_path1}\\{name}', "Bay horse"])
-for name in name_list2:
-    data.append([os.path.abspath(rel_path2 + '\\' + name), f'{rel_path2}\\{name}', "Zebra"])
+def save_as_csv(to_save: list[list[str]], columns: list[str], relpath: str) -> None:
+    df = pd.DataFrame(to_save, columns=columns)
+    df.to_csv(relpath, sep=";")
+    print(f'Successfully saved in {relpath}')
 
 
-df = pd.DataFrame(data, columns=columns)
-df.to_csv('annotation.csv', sep=";")
+def scan_dataset(folder_paths: list[str]) -> list[list[str]]:
+    result = []
+    for folder in folder_paths:
+        item_class = folder.split('\\')[-1]
+        for name in os.listdir(folder):
+            result.append([os.path.abspath(folder + '\\' + name), f'{folder}\\{name}', item_class])
+    return result
+
+
+if __name__ == "__main__":
+    rel_path1 = r'dataset\bay horse'
+    rel_path2 = r'dataset\zebra'
+
+    columns = ["Absolute path", "Relative path", "Class"]
+    data = scan_dataset([rel_path1, rel_path2])
+    save_as_csv(data, columns, 'annotation.csv')
+
+
+    

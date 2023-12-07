@@ -5,30 +5,45 @@ import random
 import cv2
 import pandas as pd
 
-columns = ["Absolute path", "Relative path", "Class"]
-data = []
-img_names = set()
 
-with open('annotation.csv', 'r', newline='') as csvfile:
-    filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
-    filereader.__next__()
-    copy_path = 'new_dataset_task3' # relative or absolute
+def scan_annotation(annotation_path: str) -> list[list[str]]:
+    with open(annotation_path, 'r', newline='') as csvfile:
+        filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
+        result = []
+        for row in filereader:
+            row.pop(0)
+            result.append(row)
+        return result
+
+
+def save_as_csv(to_save: list[list[str]], columns: list[str], relpath: str) -> None:
+    df = pd.DataFrame(to_save, columns=columns)
+    df.to_csv(relpath, sep=";")
+    print(f'Successfully saved in {relpath}')
+
+
+def randomized_dataset_copy(dataset: list[list[str]], copy_path: str) -> None:
+    # relative or absolute
     if not os.path.exists(copy_path):
         os.mkdir(copy_path)
 
-    for row in filereader:
-        print(row)
-        img_class = row[3]
-
-        img_name = str(random.randint(0, 10000))+'.jpg'
+    img_names = set()
+    for row in dataset:
+        img_class = row[-1]
+        img_name = str(random.randint(0, 10000)) + '.jpg'
         while img_name in img_names:
-            img_name = str(random.randint(0, 10000))+'.jpg'
+            img_name = str(random.randint(0, 10000)) + '.jpg'
         img_names.add(img_name)
 
-        img = cv2.imread(row[2])
-        data.append([os.path.abspath(fr'{copy_path}\{img_name}'), fr'{copy_path}\{img_name}', img_class])
+        img = cv2.imread(row[1])
         cv2.imwrite(fr'{copy_path}\{img_name}', img)
+        print(row)
+        print("Saved successfully")
 
 
-df = pd.DataFrame(data, columns=columns)
-df.to_csv('new_annotation_task3.csv', sep=";")
+if __name__ == "__main__":
+    data = scan_annotation('annotation.csv')
+    columns = data.pop(0)
+    
+    randomized_dataset_copy(data, 'new_dataset_task3')
+    save_as_csv(data, columns, 'new_annotation_task3.csv')
