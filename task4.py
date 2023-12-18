@@ -1,4 +1,5 @@
 from task2 import scan_annotation
+from task5 import ClassedAnnotationIterator
 
 counters = dict()
 counters['BAY HORSE'] = 0
@@ -34,3 +35,6 @@ if __name__ == "__main__":
     print(get_next_item_path("ZEBRA"))
     print(get_next_item_path("Bay horse"))
     print(get_next_item_path("Bay horse"))
+    
+    a = ClassedAnnotationIterator("zebra", "annotation.csv")
+    print(next(a))

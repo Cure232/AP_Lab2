@@ -1,82 +1,43 @@
+from typing import Optional
+
 from task2 import scan_annotation
 
-data = []
 
-class HorseIterator:
-    data_position = 0
-
-    def __init__(self, limit):
-        """Initializes HorseIterator that can iterate through data variable from this script.
+class ClassedAnnotationIterator:
+    columns = []
+    def __init__(self, class_name: str, annotation_path: str) -> None:
+        """Initializes Iterator that can iterate through given annotation returning only items of given class.
 
         Args:
-            limit (int): Max number of iterations.
+            class_name (str): Preffered item class.
+            annotation_path (str): Path to annotation.
         """
-        self.limit = limit
         self.counter = 0
+        self.class_name = class_name
+        self.data = scan_annotation(annotation_path)
+        self.columns = self.data.pop(0)
+        self.limit = len(self.data)
 
     def __iter__(self):
+        """Returns the Iterator object itself.
+        """
         return self
-
-    def __next__(self):
-        """Returns path to next item, increments the counter.
-
-        Raises:
-            StopIteration: Standard iterator signal.
+    
+    def __next__(self) -> Optional[str]:
+        """Returns next image of Iterator's class
 
         Returns:
-            str: Absolute path to next Horse image.
+            Optional[str]: Returns either absolute path to image or None
         """
-        if self.counter < self.limit:
-            for i in range(self.data_position, len(data)):
-                if data[i][2] == "bay horse":
-                    self.counter += 1
-                    self.data_position = i + 1
-                    return data[i][0]
-        else:
-            raise StopIteration
-
-
-class ZebraIterator:
-    data_position = 0
-
-    def __init__(self, limit):
-        """Initializes HorseIterator that can iterate through data variable from this script.
-
-        Args:
-            limit (int): Max number of iterations.
-        """
-        self.limit = limit
-        self.counter = 0
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        """Returns path to next item, increments the counter.
-
-        Raises:
-            StopIteration: Standard iterator signal.
-
-        Returns:
-            str: Absolute path to next Zebra image.
-        """
-        if self.counter < self.limit:
-            for i in range(self.data_position, len(data)):
-                if data[i][2] == "zebra":
-                    self.counter += 1
-                    self.data_position = i + 1
-                    return data[i][0]
-        else:
-            raise StopIteration
+        while self.counter < self.limit:
+            if self.data[self.counter][-1].upper() == self.class_name.upper():
+                self.counter += 1
+                return self.data[self.counter - 1][0]
+            self.counter += 1
+        raise StopIteration
 
 
 if __name__ == '__main__':
-    data = scan_annotation('annotation.csv')
-    s_iter1 = HorseIterator(3)
-    s_iter2 = ZebraIterator(5)
-    print(s_iter2.__next__())
-    for val in s_iter1:
-        print(val)
-
-    for val in s_iter2:
-        print(val)
+    s_iter1 = ClassedAnnotationIterator("zebra", "new_annotation_task3.csv")
+    for i in s_iter1:
+        print(i)
