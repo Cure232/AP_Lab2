@@ -1,10 +1,16 @@
-import csv
+from task2 import scan_annotation
 
+data = []
 
 class HorseIterator:
     data_position = 0
 
     def __init__(self, limit):
+        """Initializes HorseIterator that can iterate through data variable from this script.
+
+        Args:
+            limit (int): Max number of iterations.
+        """
         self.limit = limit
         self.counter = 0
 
@@ -12,6 +18,14 @@ class HorseIterator:
         return self
 
     def __next__(self):
+        """Returns path to next item, increments the counter.
+
+        Raises:
+            StopIteration: Standard iterator signal.
+
+        Returns:
+            str: Absolute path to next Horse image.
+        """
         if self.counter < self.limit:
             for i in range(self.data_position, len(data)):
                 if data[i][2] == "bay horse":
@@ -26,6 +40,11 @@ class ZebraIterator:
     data_position = 0
 
     def __init__(self, limit):
+        """Initializes HorseIterator that can iterate through data variable from this script.
+
+        Args:
+            limit (int): Max number of iterations.
+        """
         self.limit = limit
         self.counter = 0
 
@@ -33,6 +52,14 @@ class ZebraIterator:
         return self
 
     def __next__(self):
+        """Returns path to next item, increments the counter.
+
+        Raises:
+            StopIteration: Standard iterator signal.
+
+        Returns:
+            str: Absolute path to next Zebra image.
+        """
         if self.counter < self.limit:
             for i in range(self.data_position, len(data)):
                 if data[i][2] == "zebra":
@@ -43,21 +70,11 @@ class ZebraIterator:
             raise StopIteration
 
 
-def scan_annotation(annotation_path: str) -> list[list[str]]:
-    with open(annotation_path, 'r', newline='') as csvfile:
-        filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
-        result = []
-        for row in filereader:
-            row.pop(0)
-            result.append(row)
-        return result 
-
-
 if __name__ == '__main__':
     data = scan_annotation('annotation.csv')
     s_iter1 = HorseIterator(3)
     s_iter2 = ZebraIterator(5)
-    s_iter2.__next__
+    print(s_iter2.__next__())
     for val in s_iter1:
         print(val)
 
