@@ -1,5 +1,5 @@
-import csv
-
+from task2 import scan_annotation
+from task5 import ClassedAnnotationIterator
 
 counters = dict()
 counters['BAY HORSE'] = 0
@@ -7,10 +7,18 @@ counters['ZEBRA'] = 0
 
 
 def get_next_item_path(item_class: str) -> str:
+    """Returns path to next item of given class.
+
+    Args:
+        item_class (str): Preferred class. 
+
+    Returns:
+        str: Path to next item of given class.
+    """
     item_class = item_class.upper()
     counter = 0
     for item in data:
-        if item[3].upper() == item_class:
+        if item[2].upper() == item_class:
             if counter == counters[item_class]:
                 counters[item_class] += 1
                 return item[1]
@@ -18,22 +26,15 @@ def get_next_item_path(item_class: str) -> str:
                 counter += 1
 
 
-def scan_annotation(annotation_path: str) -> list[list[str]]:
-    with open(annotation_path, 'r', newline='') as csvfile:
-        filereader = csv.reader(csvfile, delimiter=';', quotechar='|')
-        result = []
-        for row in filereader:
-            row.pop(0)
-            result.append(row)
-        return result 
-
-
-
 if __name__ == "__main__":
     data = scan_annotation('annotation.csv')
+    data.pop(0)
     print(get_next_item_path("ZEBRA"))
     print(get_next_item_path("ZEBRA"))
     print(get_next_item_path("Bay horse"))
     print(get_next_item_path("ZEBRA"))
     print(get_next_item_path("Bay horse"))
     print(get_next_item_path("Bay horse"))
+    
+    a = ClassedAnnotationIterator("zebra", "annotation.csv")
+    print(next(a))
